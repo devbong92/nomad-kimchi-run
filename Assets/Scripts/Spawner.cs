@@ -11,11 +11,17 @@ public class Spawner : MonoBehaviour
     [Header("References")]
     public GameObject[] gameObjects;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    
+    // * OnEnable() : 오브젝트가 활성화될 때마다 호출되는 메서드 
+    void OnEnable()
     {
         // Random 범위 초후에 Spawn 함수 실행 
         Invoke("Spawn", Random.Range(minSpawnDelay,maxSpawnDelay));
+    }
+
+    void OnDisable()
+    {
+        CancelInvoke();
     }
 
     void Spawn(){

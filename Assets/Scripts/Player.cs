@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class Player : MonoBehaviour
 {
 
     [Header("Settings")]
@@ -9,14 +9,12 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
     [Header("References")]
     public Rigidbody2D PlayerRigidBody;
-
     public Animator PlayerAnimator;
+    public BoxCollider2D PlayerCollider;
 
-
-    private bool isGrounded = true;
-
-    private int lives = 3;
-    private bool isInvincible = false;
+    
+    public bool isGrounded = true;
+    public bool isInvincible = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,16 +35,25 @@ public class NewMonoBehaviourScript : MonoBehaviour
         }
     }
 
+    public void KillPlayer(){
+        // Boxcolider 비활성화 
+        PlayerCollider.enabled = false;
+        // Animator 비활성화 
+        PlayerAnimator.enabled = false;
+
+        PlayerRigidBody.AddForceY(JumpForce, ForceMode2D.Impulse);
+    }
 
     /* 플레이어 생명 감소 */
     void Hit(){
-        lives -= 1;
+        GameManager.Instance.Lives -= 1;
+        
     }
 
     /* 플레이어 생명 증가 */
     void Heal(){
         // 생명은 최대 3(초기값)으로 제한
-        lives = Mathf.Min(3,lives + 1);
+        GameManager.Instance.Lives = Mathf.Min(3,GameManager.Instance.Lives + 1);
     }
 
     /* 무적(황금배추) 시작 */
@@ -80,7 +87,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
     /*
         플레이어 캐릭터와 오브젝트가 충돌 이벤트 발생 시, 
     */
-    void OgerEnter2D(Collider2D collider)
+    void OnTriggerEnter2D(Collider2D collider)
     {
         if(collider.gameObject.tag == "enemy")
         {
